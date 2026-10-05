@@ -1,16 +1,24 @@
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
+const path = require('path');
 const User = require('./models/User');
 const Category = require('./models/Category');
 const Product = require('./models/Product');
 const Order = require('./models/Order');
 
-dotenv.config();
+// Load environment variables from server/.env, root .env, or docs/.env
+dotenv.config({ path: path.resolve(__dirname, '.env') });
+if (!process.env.MONGODB_URI) {
+  dotenv.config({ path: path.resolve(__dirname, '../.env') });
+}
+if (!process.env.MONGODB_URI) {
+  dotenv.config({ path: path.resolve(__dirname, '../docs/.env') });
+}
 
 const connectDB = async () => {
   try {
-    await mongoose.connect(process.env.MONGODB_URI);
-    console.log('MongoDB Connected for Seeder...');
+    const conn = await mongoose.connect(process.env.MONGODB_URI);
+    console.log(`MongoDB Connected for Seeder: ${conn.connection.host}`);
   } catch (error) {
     console.error(`Error: ${error.message}`);
     process.exit(1);

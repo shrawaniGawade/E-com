@@ -1,11 +1,23 @@
 const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
+const path = require('path');
+
+// Load environment variables from server/.env, root .env, or docs/.env
+dotenv.config({ path: path.resolve(__dirname, '.env') });
+if (!process.env.MONGODB_URI) {
+  dotenv.config({ path: path.resolve(__dirname, '../.env') });
+}
+if (!process.env.MONGODB_URI) {
+  dotenv.config({ path: path.resolve(__dirname, '../docs/.env') });
+}
+
+// Fallback defaults if not set
+if (!process.env.PORT) process.env.PORT = '5000';
+if (!process.env.JWT_SECRET) process.env.JWT_SECRET = 'super_secret_jwt_key_mern_ecommerce_2026';
+
 const connectDB = require('./config/db');
 const errorHandler = require('./middleware/errorHandler');
-
-// Load environment variables
-dotenv.config();
 
 // Connect to MongoDB
 connectDB();
